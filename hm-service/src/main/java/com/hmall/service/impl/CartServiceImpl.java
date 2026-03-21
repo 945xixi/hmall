@@ -114,17 +114,24 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
     }
 
     private void checkCartsFull(Long userId) {
-        int count = lambdaQuery().eq(Cart::getUserId, userId).count();
+        // TODO：修改课程代码
+        //int count = lambdaQuery().eq(Cart::getUserId, userId).count();
+        int count = Integer.valueOf(lambdaQuery().eq(Cart::getUserId, userId).count()+"");
         if (count >= 10) {
             throw new BizIllegalException(StrUtil.format("用户购物车课程不能超过{}", 10));
         }
     }
 
     private boolean checkItemExists(Long itemId, Long userId) {
-        int count = lambdaQuery()
+        // TODO：修改课程代码
+        /*int count = lambdaQuery()
                 .eq(Cart::getUserId, userId)
                 .eq(Cart::getItemId, itemId)
-                .count();
+                .count();*/
+        int count = Integer.valueOf(lambdaQuery()
+                .eq(Cart::getUserId, userId)
+                .eq(Cart::getItemId, itemId)
+                .count()+"");
         return count > 0;
     }
 }
