@@ -65,6 +65,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
     @Override
     public List<CartVO> queryMyCarts() {
         // 1.查询我的购物车列表
+        System.out.println("++++++++++");
         List<Cart> carts = lambdaQuery().eq(Cart::getUserId, UserContext.getUser()).list();
         if (CollUtils.isEmpty(carts)) {
             return CollUtils.emptyList();
@@ -114,7 +115,6 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
     }
 
     private void checkCartsFull(Long userId) {
-        // TODO：修改课程代码
         //int count = lambdaQuery().eq(Cart::getUserId, userId).count();
         int count = Integer.valueOf(lambdaQuery().eq(Cart::getUserId, userId).count()+"");
         if (count >= 10) {
@@ -123,7 +123,6 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
     }
 
     private boolean checkItemExists(Long itemId, Long userId) {
-        // TODO：修改课程代码
         /*int count = lambdaQuery()
                 .eq(Cart::getUserId, userId)
                 .eq(Cart::getItemId, itemId)
