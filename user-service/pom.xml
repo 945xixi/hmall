@@ -7,11 +7,11 @@
         <version>1.0.0</version>
     </parent>
 
-    <groupId>com.hmall.cart</groupId>
-    <artifactId>cart-service</artifactId>
+    <groupId>com.hamll.user</groupId>
+    <artifactId>user-service</artifactId>
     <packaging>jar</packaging>
 
-    <name>cart-service</name>
+    <name>user-service</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -25,10 +25,25 @@
             <artifactId>hm-common</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.hmall.api</groupId>
+            <artifactId>hm-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
         <!--web-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!--加密-->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-rsa</artifactId>
+            <version>1.0.9.RELEASE</version>
         </dependency>
         <!--数据库-->
         <dependency>
@@ -40,7 +55,6 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
         </dependency>
-        <!--redis-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
@@ -50,16 +64,10 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
         </dependency>
-
         <!--OK http 的依赖 -->
         <dependency>
             <groupId>io.github.openfeign</groupId>
             <artifactId>feign-okhttp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.hmall.api</groupId>
-            <artifactId>hm-api</artifactId>
-            <version>1.0.0</version>
         </dependency>
     </dependencies>
     <build>

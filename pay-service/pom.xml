@@ -7,11 +7,11 @@
         <version>1.0.0</version>
     </parent>
 
-    <groupId>com.hmall.cart</groupId>
-    <artifactId>cart-service</artifactId>
+    <groupId>com.hmall.pay</groupId>
+    <artifactId>pay-service</artifactId>
     <packaging>jar</packaging>
 
-    <name>cart-service</name>
+    <name>pay-service</name>
     <url>http://maven.apache.org</url>
 
     <properties>
