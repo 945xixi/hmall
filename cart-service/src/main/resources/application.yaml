@@ -1,84 +1,99 @@
+# 使用服务配置
 server:
   port: 8082
-spring:
-  application:
-    name: cart-service
-  profiles:
-    active: dev
-  datasource:
-    url: jdbc:mysql://${hm.db.host}:3306/hm-cart?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: ${hm.db.pw}
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 192.168.203.135:8848
-        username: nacos          # Nacos 默认用户名
-        password: nacos          # Nacos 默认密码
-#    openfeign: # 服务调用和负载均衡--（超时，压缩，请求类型，重试(另外写feign配置类，见springcloud笔记)）
-#      client:
-#        config: # 局部优先级高于全局（ms）
-#          #          default: #全局配置--即order80通过openfeign调用谁都是这个配置
-#          #            connectTimeout: 4000 #连接超时时间
-#          #            readTimeout: 4000 #读取超时时间 默认60s
-#          item-service: # 局部配置--调用这个微服务的配置
-#            connectTimeout: 20000 #连接超时时间
-#            readTimeout: 20000 #读取超时时间 默认60s
-#      httpclient: # http发送请求类型，改为apache的 hc5 【必须】
-#        hc5:
-#          enabled: true # 开启
-#      compression: # 请求 响应 传输参数压缩
-#        request:
-#          enabled: true
-#          min-request-size: 2048 #最小触发压缩的大小
-#          mime-types: text/xml,application/xml,application/json #触发压缩数据类型
-#        response:
-#          enabled: true
-mybatis-plus:
-  configuration:
-    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
-  global-config:
-    db-config:
-      update-strategy: not_null
-      id-type: auto
-logging:
-  level:
-    com.hmall: debug
-  pattern:
-    dateformat: HH:mm:ss:SSS
-  file:
-    path: "logs/${spring.application.name}"
-knife4j:
-  enable: true
-  openapi:
-    title: 黑马商城购物车管理接口文档
-    description: "黑马商城购物车管理接口文档"
-    email: zhanghuyi@itcast.cn
-    concat: 虎哥
-    url: https://www.itcast.cn
-    version: v1.0.0
-    group:
-      default:
-        group-name: default
-        api-rule: package
-        api-rule-resources:
-          - com.hmall.cart.controller
-
 feign:
-  okhttp: # 使用连接池
-    enabled: true # 开启OKHttp功能
-
+  okhttp:
+    enabled: true # 开启OKHttp连接池支持
 hm:
-  jwt:
-    location: classpath:hmall.jks
-    alias: hmall
-    password: hmall123
-    tokenTTL: 30m
-  auth:
-    excludePaths:
-      - /search/**
-      - /users/login
-      - /items/**
-      - /hi
+  swagger:
+    title: 购物车服务接口文档
+    package: com.hmall.cart.controller
+  db:
+    database: hm-cart
+
+# 没使用服务配置，也是完整的配置
+#server:
+#  port: 8082
+#spring:
+#  application:
+#    name: cart-service
+#  profiles:
+#    active: dev
+#  datasource:
+#    url: jdbc:mysql://${hm.db.host}:3306/hm-cart?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    username: root
+#    password: ${hm.db.pw}
+#  cloud:
+#    nacos:
+#      discovery:
+#        server-addr: 192.168.203.135:8848
+#        username: nacos          # Nacos 默认用户名
+#        password: nacos          # Nacos 默认密码
+##    openfeign: # 服务调用和负载均衡--（超时，压缩，请求类型，重试(另外写feign配置类，见springcloud笔记)）
+##      client:
+##        config: # 局部优先级高于全局（ms）
+##          #          default: #全局配置--即order80通过openfeign调用谁都是这个配置
+##          #            connectTimeout: 4000 #连接超时时间
+##          #            readTimeout: 4000 #读取超时时间 默认60s
+##          item-service: # 局部配置--调用这个微服务的配置
+##            connectTimeout: 20000 #连接超时时间
+##            readTimeout: 20000 #读取超时时间 默认60s
+##      httpclient: # http发送请求类型，改为apache的 hc5 【必须】
+##        hc5:
+##          enabled: true # 开启
+##      compression: # 请求 响应 传输参数压缩
+##        request:
+##          enabled: true
+##          min-request-size: 2048 #最小触发压缩的大小
+##          mime-types: text/xml,application/xml,application/json #触发压缩数据类型
+##        response:
+##          enabled: true
+#mybatis-plus:
+#  configuration:
+#    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
+#  global-config:
+#    db-config:
+#      update-strategy: not_null
+#      id-type: auto
+#logging:
+#  level:
+#    com.hmall: debug
+#  pattern:
+#    dateformat: HH:mm:ss:SSS
+#  file:
+#    path: "logs/${spring.application.name}"
+#knife4j:
+#  enable: true
+#  openapi:
+#    title: 黑马商城购物车管理接口文档
+#    description: "黑马商城购物车管理接口文档"
+#    email: zhanghuyi@itcast.cn
+#    concat: 虎哥
+#    url: https://www.itcast.cn
+#    version: v1.0.0
+#    group:
+#      default:
+#        group-name: default
+#        api-rule: package
+#        api-rule-resources:
+#          - com.hmall.cart.controller
+#
+#feign:
+#  okhttp: # 使用连接池
+#    enabled: true # 开启OKHttp功能
+#
+#hm:
+#  jwt:
+#    location: classpath:hmall.jks
+#    alias: hmall
+#    password: hmall123
+#    tokenTTL: 30m
+#  auth:
+#    excludePaths:
+#      - /search/**
+#      - /users/login
+#      - /items/**
+#      - /hi
 # keytool -genkeypair -alias hmall -keyalg RSA -keypass hmall123 -keystore hmall.jks -storepass hmall123
+
