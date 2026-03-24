@@ -11,7 +11,7 @@ import org.springframework.cloud.openfeign.FallbackFactory;
 import java.util.Collection;
 import java.util.List;
 
-// TODO；熔断降级
+// TODO；服务降级
 @Slf4j
 public class ItemClientFallback implements FallbackFactory<ItemClient> {
     @Override

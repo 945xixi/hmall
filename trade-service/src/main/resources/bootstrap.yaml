@@ -17,7 +17,7 @@
 
 spring:
   application:
-    name: cart-service # 服务名称
+    name: trade-service # 服务名称
   profiles:
     active: dev
   cloud:
