@@ -15,6 +15,9 @@ import com.hmall.pay.enums.PayStatus;
 import com.hmall.pay.mapper.PayOrderMapper;
 import com.hmall.pay.service.IPayOrderService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,12 +33,15 @@ import java.time.LocalDateTime;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PayOrderServiceImpl extends ServiceImpl<PayOrderMapper, PayOrder> implements IPayOrderService {
 
     //private final IUserService userService;
     private final UserClient userClient;
     //private final IOrderService orderService;
-    private final TradeClient tradeClient;
+    //private final TradeClient tradeClient;
+
+    private final RabbitTemplate rabbitTemplate;
 
     @Override
     public String applyPayOrder(PayApplyDTO applyDTO) {
@@ -63,7 +69,17 @@ public class PayOrderServiceImpl extends ServiceImpl<PayOrderMapper, PayOrder> i
             throw new BizIllegalException("交易已支付或关闭！");
         }
         // 5.修改订单状态
-        tradeClient.markOrderPaySuccess(po.getBizOrderNo());
+        //tradeClient.markOrderPaySuccess(po.getBizOrderNo());
+        // TODO：1mq--生产者
+        // 因为修改订单状态不是交易的核心，所以用异步
+        // 为了不让异步影响上面的代码，所以try
+        /*try {
+            // 因为是发给trade的，所以他是消费者
+            rabbitTemplate.convertAndSend("pay.direct", "pay.success", po.getBizOrderNo());
+
+        }catch (Exception e){
+            log.error("发送支付状态通知失败，订单id：{}", po.getBizOrderNo(), e);
+        }*/
     }
 
     public boolean markPayOrderSuccess(Long id, LocalDateTime successTime) {

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hmall.api.client.CartClient;
 import com.hmall.api.client.ItemClient;
 import com.hmall.api.dto.ItemDTO;
+import com.hmall.trace.constants.MQConstants;
 import com.hmall.trace.domain.dto.OrderDetailDTO;
 import com.hmall.common.exception.BadRequestException;
 import com.hmall.common.utils.BeanUtils;
@@ -17,6 +18,7 @@ import com.hmall.trace.service.IOrderDetailService;
 import com.hmall.trace.service.IOrderService;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +46,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private final IOrderDetailService detailService;
     //private final ICartService cartService;
     private final CartClient cartClient;
+
+    private final RabbitTemplate rabbitTemplate;
 
     @Override
     //@Transactional
@@ -80,9 +84,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         List<OrderDetail> details = buildDetails(order.getId(), items, itemNumMap);
         detailService.saveBatch(details);
 
+        // TODO；下面代码3和4有问题
         // 3.清理购物车商品
         //cartService.removeByItemIds(itemIds);
-        cartClient.deleteCartItemByIds(itemIds);
+        /*cartClient.deleteCartItemByIds(itemIds);
 
         // 4.扣减库存
         try {
@@ -92,7 +97,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             itemClient.deductStock(orderDetailDTOS);
         } catch (Exception e) {
             throw new RuntimeException("库存不足！");
-        }
+        }*/
+
+        // 检查订单是否支付，没有取消超时订单
+        // TODO；2mq（取消超时订单）--生产者
+        rabbitTemplate.convertAndSend(MQConstants.DELAY_EXCHANGE_NAME
+                , MQConstants.DELAY_ORDER_KEY, order.getId(),
+                message -> {
+                    // 应该设置15min，但这个为了测试，设置10s
+                    message.getMessageProperties().setDelay(1000);
+                    return message;
+                });
         return order.getId();
     }
 
@@ -103,6 +118,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setStatus(2);
         order.setPayTime(LocalDateTime.now());
         updateById(order);
+    }
+
+    /**
+     * 取消订单，恢复库存
+     * @param orderId
+     */
+    @Override
+    public void cancelOrder(Long orderId) {
+        // 取消订单
+        // 恢复库存
     }
 
     private List<OrderDetail> buildDetails(Long orderId, List<ItemDTO> items, Map<Long, Integer> numMap) {
